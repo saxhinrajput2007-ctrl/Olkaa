@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -28,17 +28,30 @@ h1{
     padding:20px;
     border-radius:15px;
 }
+input{
+    width:90%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+}
 button{
     background:#38bdf8;
     color:white;
     border:none;
-    padding:15px 30px;
-    border-radius:30px;
+    padding:12px 25px;
+    margin:10px;
+    border-radius:25px;
     font-size:18px;
     cursor:pointer;
 }
 button:hover{
     background:#0284c7;
+}
+#status{
+    margin-top:15px;
+    color:#7dd3fc;
 }
 </style>
 </head>
@@ -53,18 +66,25 @@ button:hover{
 <div class="card">
 <h2>Welcome to OLKO</h2>
 <p>Your chat platform is coming soon.</p>
-<input type="email" id="email" placeholder="Email">
 
+<input type="email" id="email" placeholder="Email">
 <input type="password" id="password" placeholder="Password">
 
 <button id="signup">Sign Up</button>
-
 <button id="login">Login</button>
 
 <p id="status"></p>
 </div>
+
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDKlI4lNpFWv9c09aro_QGw6oM7nnLz208",
@@ -76,39 +96,43 @@ const firebaseConfig = {
   measurementId: "G-NWW02DCCY6"
 };
 
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+// IMPORTANT
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-const auth = getAuth();
-
+// Sign Up
 document.getElementById("signup").onclick = () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById("status").innerText = "Sign Up Successful!";
-    })
-    .catch((error) => {
-      document.getElementById("status").innerText = error.message;
-    });
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
+
+createUserWithEmailAndPassword(auth,email,password)
+.then((userCredential)=>{
+document.getElementById("status").innerText="✅ Sign Up Successful!";
+})
+.catch((error)=>{
+document.getElementById("status").innerText=error.message;
+});
+
 };
 
+// Login
 document.getElementById("login").onclick = () => {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById("status").innerText = "Login Successful!";
-    })
-    .catch((error) => {
-      document.getElementById("status").innerText = error.message;
-    });
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
+
+signInWithEmailAndPassword(auth,email,password)
+.then((userCredential)=>{
+document.getElementById("status").innerText="✅ Login Successful!";
+})
+.catch((error)=>{
+document.getElementById("status").innerText=error.message;
+});
+
 };
+
 </script>
+
 </body>
 </html>
