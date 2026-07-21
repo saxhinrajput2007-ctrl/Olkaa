@@ -40,7 +40,11 @@ user.uid), {
 });
 
 loadUsers(user.uid);
-
+window.addEventListener("beforeunload", async () => {
+  await updateDoc(doc(db, "users", myUid), {
+    online: false
+  });
+});
 });
 
 // Load Users
