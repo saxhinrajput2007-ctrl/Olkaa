@@ -12,45 +12,43 @@ import {
 
 const usersDiv = document.getElementById("users");
 
-// Login check
-onAuthStateChanged(auth, async (user) => {
-
+// Login Check
+onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "index.html";
     return;
   }
 
   loadUsers(user.uid);
-
 });
 
-// Load users
+// Load Users
 async function loadUsers(myUid) {
 
   usersDiv.innerHTML = "";
 
   const snapshot = await getDocs(collection(db, "users"));
 
-  snapshot.forEach((doc) => {
+  snapshot.forEach((docSnap) => {
 
-    const data = doc.data();
+    const data = docSnap.data();
 
     if (data.uid !== myUid) {
 
       const div = document.createElement("div");
-
       div.className = "user";
 
-      div.innerHTML = data.email;
+      div.innerHTML = `
+        <img src="${data.photo}" width="45" height="45"
+        style="border-radius:50%;margin-right:10px;vertical-align:middle;">
+        <span>${data.name}</span>
+      `;
 
       div.onclick = () => {
-
-        alert("Chat with: " + data.email);
-
+        alert("Chat with " + data.name);
       };
 
       usersDiv.appendChild(div);
-
     }
 
   });
@@ -59,9 +57,6 @@ async function loadUsers(myUid) {
 
 // Logout
 document.getElementById("logout").onclick = async () => {
-
   await signOut(auth);
-
   window.location.href = "index.html";
-
 };
