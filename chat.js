@@ -82,15 +82,7 @@ document.getElementById("logout").onclick = async () => {
 
   window.location.href = "index.html";
 
-};import {
-  collection,
-  getDocs,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+};
 // Send Message
 sendBtn.onclick = async () => {
 
