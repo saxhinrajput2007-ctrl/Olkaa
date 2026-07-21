@@ -1,17 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OLKO Chat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OLKaa Chat</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#1e293b;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+#users{
+height:150px;
+overflow:auto;
+background:#1e293b;
+padding:10px;
+}
+
+.user{
+padding:10px;
+background:#334155;
+margin:5px 0;
+border-radius:8px;
+cursor:pointer;
+}
+
+#chatBox{
+height:350px;
+overflow:auto;
+padding:10px;
+background:#111827;
+}
+
+.message{
+padding:10px;
+margin:5px;
+border-radius:10px;
+background:#2563eb;
+display:inline-block;
+max-width:80%;
+}
+
+.bottom{
+display:flex;
+padding:10px;
+background:#1e293b;
+}
+
+.bottom input{
+flex:1;
+padding:10px;
+}
+
+.bottom button{
+padding:10px 20px;
+}
+</style>
+
 </head>
-<body style="background:#0f172a;color:white;font-family:Arial;text-align:center;">
 
-<h1>OLKO Chat</h1>
+<body>
 
-<p>Welcome 🎉 You are logged in.</p>
-
+<header>
+<h2>OLKaa Chat</h2>
 <button id="logout">Logout</button>
+</header>
+
+<div id="users">
+<h3>Users</h3>
+</div>
+
+<div id="chatBox"></div>
+
+<div class="bottom">
+<input
+type="text"
+id="message"
+placeholder="Type message...">
+
+<button id="send">
+Send
+</button>
+</div>
 
 <script type="module" src="chat.js"></script>
 
