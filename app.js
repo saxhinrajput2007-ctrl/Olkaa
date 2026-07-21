@@ -10,8 +10,7 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// SIGNUP
-document.getElementById("signup").addEventListener("click", async () => {
+document.getElementById("signup").onclick = async () => {
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -24,7 +23,7 @@ document.getElementById("signup").addEventListener("click", async () => {
       uid: userCredential.user.uid,
       email: email,
       name: email.split("@")[0],
-      photo: "https://i.pravatar.cc/150?u=" + userCredential.user.uid
+      photo: "https://i.pravatar.cc/150?img=1"
     });
 
     alert("Signup Successful");
@@ -34,10 +33,9 @@ document.getElementById("signup").addEventListener("click", async () => {
     document.getElementById("status").innerText = error.message;
   }
 
-});
+};
 
-// LOGIN
-document.getElementById("login").addEventListener("click", async () => {
+document.getElementById("login").onclick = async () => {
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -53,4 +51,4 @@ document.getElementById("login").addEventListener("click", async () => {
     document.getElementById("status").innerText = error.message;
   }
 
-});
+};
