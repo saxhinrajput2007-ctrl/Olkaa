@@ -1,35 +1,48 @@
-import { auth } from "./firebase.js";
+import { auth, db } from "./firebase.js";
+
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
+import {
+  doc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 // SIGN UP
-document.getElementById("signup").onclick = () => {
+document.getElementById("signup").onclick = async () => {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {alert("Login Success");
-      document.getElementById("status").innerText = "✅ Sign Up Successful!";
-      window.location.href = "chat.html";
-    })
-    .catch((error) => {
-      document.getElementById("status").innerText = error.message;
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      email: email
     });
+
+    alert("Signup Success");
+    window.location.href = "chat.html";
+
+  } catch (error) {
+    document.getElementById("status").innerText = error.message;
+  }
 };
 
 // LOGIN
-document.getElementById("login").onclick = () => {
+document.getElementById("login").onclick = async () => {
   const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const password = document.getElementById("password").trim();
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {alert("Login Success");
-      document.getElementById("status").innerText = "✅ Login Successful!";
-      window.location.href = "chat.html";
-    })
-    .catch((error) => {
-      document.getElementById("status").innerText = error.message;
-    });
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    alert("Login Success");
+    window.location.href = "chat.html";
+
+  } catch (error) {
+    document.getElementById("status").innerText = error.message;
+  }
 };
