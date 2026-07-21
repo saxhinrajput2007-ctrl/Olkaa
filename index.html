@@ -61,78 +61,19 @@ button:hover{
 <header>
 <h1>OLKO</h1>
 <p>Talk Freely. Connect Safely.</p>
-</header>
-
 <div class="card">
-<h2>Welcome to OLKO</h2>
-<p>Your chat platform is coming soon.</p>
+  <h2>Welcome to OLKO</h2>
+  <p>Your chat platform is coming soon.</p>
 
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
-<button id="signup">Sign Up</button>
-<button id="login">Login</button>
+  <button id="signup">Sign Up</button>
+  <button id="login">Login</button>
 
-<p id="status"></p>
+  <p id="status"></p>
 </div>
 
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDKlI4lNpFWv9c09aro_QGw6oM7nnLz208",
-  authDomain: "olkaa-e2804.firebaseapp.com",
-  projectId: "olkaa-e2804",
-  storageBucket: "olkaa-e2804.firebasestorage.app",
-  messagingSenderId: "333255014176",
-  appId: "1:333255014176:web:f876db7d113eeb749c4945",
-  measurementId: "G-NWW02DCCY6"
-};
-
-// IMPORTANT
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// Sign Up
-document.getElementById("signup").onclick = () => {
-
-const email = document.getElementById("email").value.trim();
-const password = document.getElementById("password").value.trim();
-
-createUserWithEmailAndPassword(auth,email,password)
-.then((userCredential)=>{
-document.getElementById("status").innerText="✅ Sign Up Successful!";
-})
-.catch((error)=>{
-document.getElementById("status").innerText=error.message;
-});
-
-};
-
-// Login
-document.getElementById("login").onclick = () => {
-
-const email = document.getElementById("email").value.trim();
-const password = document.getElementById("password").value.trim();
-
-signInWithEmailAndPassword(auth,email,password)
-.then((userCredential)=>{
-document.getElementById("status").innerText="✅ Login Successful!";
-})
-.catch((error)=>{
-document.getElementById("status").innerText=error.message;
-});
-
-};
-
-</script>
-
+<script type="module" src="app.js"></script>
 </body>
 </html>
