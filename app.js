@@ -22,10 +22,10 @@ document.getElementById("login").onclick = () => {
   const password = document.getElementById("password").value.trim();
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      document.getElementById("status").innerText = "✅ Login Successful!";
-    })window.location.href = "chat.html";
-    .catch((error) => {
-      document.getElementById("status").innerText = error.message;
-    });
-};
+.then(() => {
+    document.getElementById("status").innerText = "✅ Login Successful!";
+    window.location.href = "chat.html";
+})
+.catch((error) => {
+    document.getElementById("status").innerText = error.message;
+});
