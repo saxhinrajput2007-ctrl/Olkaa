@@ -88,7 +88,9 @@ async function loadUsers(uid) {
 
 // Logout
 document.getElementById("logout").onclick = async () => {
-
+await updateDoc(doc(db, "users", myUid), {
+  online: false
+});
   await signOut(auth);
 
   window.location.href = "index.html";
