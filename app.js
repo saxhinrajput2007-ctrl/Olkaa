@@ -10,7 +10,7 @@ import {
   setDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-// SIGN UP
+// SIGNUP
 document.getElementById("signup").addEventListener("click", async () => {
 
   const email = document.getElementById("email").value.trim();
@@ -18,19 +18,16 @@ document.getElementById("signup").addEventListener("click", async () => {
 
   try {
 
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", userCredential.user.uid), {
       uid: userCredential.user.uid,
-      email: email
+      email: email,
+      name: email.split("@")[0],
+      photo: "https://i.pravatar.cc/150?u=" + userCredential.user.uid
     });
 
     alert("Signup Successful");
-
     window.location.href = "chat.html";
 
   } catch (error) {
@@ -50,7 +47,6 @@ document.getElementById("login").addEventListener("click", async () => {
     await signInWithEmailAndPassword(auth, email, password);
 
     alert("Login Successful");
-
     window.location.href = "chat.html";
 
   } catch (error) {
