@@ -11,7 +11,7 @@ document.getElementById("signup").onclick = () => {
   createUserWithEmailAndPassword(auth, email, password)
     .then(() => {
       document.getElementById("status").innerText = "✅ Sign Up Successful!";
-    })
+    })window.location.href = "chat.html";
     .catch((error) => {
       document.getElementById("status").innerText = error.message;
     });
@@ -24,7 +24,7 @@ document.getElementById("login").onclick = () => {
   signInWithEmailAndPassword(auth, email, password)
     .then(() => {
       document.getElementById("status").innerText = "✅ Login Successful!";
-    })
+    })window.location.href = "chat.html";
     .catch((error) => {
       document.getElementById("status").innerText = error.message;
     });
