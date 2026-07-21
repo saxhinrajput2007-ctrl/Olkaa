@@ -7,7 +7,8 @@ import {
   query,
   orderBy,
   onSnapshot,
-  serverTimestamp
+  serverTimestamp,doc,
+updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import {
   signOut,
@@ -32,7 +33,13 @@ onAuthStateChanged(auth, (user) => {
   }
 
   myUid = user.uid;
-  loadUsers(user.uid);
+
+await updateDoc(doc(db, "users",
+user.uid), {
+  online: true
+});
+
+loadUsers(user.uid);
 
 });
 
