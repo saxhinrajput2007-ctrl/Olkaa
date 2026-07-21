@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OLKaa Chat</title>
 
-<title>OLKaa Chat</title>
-
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <div class="container">
 
-<div class="sidebar">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Users</h2>
 
-<h2>Users</h2>
+    <div id="users"></div>
 
-<div id="users"></div>
+    <button id="logout">Logout</button>
+  </div>
 
-<button id="logout">Logout</button>
+  <!-- Chat Area -->
+  <div class="chat">
 
-</div>
+    <div id="chatHeader">
+      Select a user
+    </div>
 
-<div class="chat">
+    <hr>
 
-<div id="chatHeader">
-Select a user
-</div>
+    <h3>Saved Messages</h3>
 
-<div id="messages"></div>
+    <div id="messages"
+      style="height:300px;
+      overflow-y:auto;
+      border:1px solid #ccc;
+      padding:10px;">
+    </div>
 
-<div class="sendBox">
+    <input
+      id="message"
+      type="text"
+      placeholder="Type message..."
+    >
 
-<input
-type="text"
-id="messageInput"
-placeholder="Type message..."
->
+    <button id="send">
+      Send
+    </button>
 
-<button id="sendBtn">
-Send
-</button>
-
-</div>
-
-</div>
+  </div>
 
 </div>
 
