@@ -10,7 +10,7 @@ document.getElementById("signup").onclick = () => {
   const password = document.getElementById("password").value.trim();
 
   createUserWithEmailAndPassword(auth, email, password)
-    .then(() => {
+    .then(() => {alert("Login Success");
       document.getElementById("status").innerText = "✅ Sign Up Successful!";
       window.location.href = "chat.html";
     })
@@ -25,7 +25,7 @@ document.getElementById("login").onclick = () => {
   const password = document.getElementById("password").value.trim();
 
   signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
+    .then(() => {alert("Login Success");
       document.getElementById("status").innerText = "✅ Login Successful!";
       window.location.href = "chat.html";
     })
