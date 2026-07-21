@@ -1,58 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OLKaa Chat</title>
+import { auth, db } from "./firebase.js";
 
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-<div class="container">
+import {
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>Users</h2>
+const usersDiv = document.getElementById("users");
+const chatHeader = document.getElementById("chatHeader");
 
-    <div id="users"></div>
+// Login Check
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-    <button id="logout">Logout</button>
-  </div>
+  loadUsers(user.uid);
+});
 
-  <!-- Chat Area -->
-  <div class="chat">
+// Load Users
+async function loadUsers(myUid) {
 
-    <div id="chatHeader">
-      Select a user
-    </div>
+  usersDiv.innerHTML = "";
 
-    <hr>
+  const snapshot = await getDocs(collection(db, "users"));
 
-    <h3>Saved Messages</h3>
+  snapshot.forEach((docSnap) => {
 
-    <div id="messages"
-      style="height:300px;
-      overflow-y:auto;
-      border:1px solid #ccc;
-      padding:10px;">
-    </div>
+    const data = docSnap.data();
 
-    <input
-      id="message"
-      type="text"
-      placeholder="Type message..."
-    >
+    if (data.uid !== myUid) {
 
-    <button id="send">
-      Send
-    </button>
+      const div = document.createElement("div");
+      div.className = "user";
 
-  </div>
+      div.innerHTML = `
+        <img src="${data.photo}" width="45" height="45"
+        style="border-radius:50%;margin-right:10px;vertical-align:middle;">
+        <span>${data.name}</span>
+      `;
 
-</div>
+      div.onclick = () => {
+        chatHeader.innerText = data.name;
+      };
 
-<script type="module" src="chat.js"></script>
+      usersDiv.appendChild(div);
+    }
 
-</body>
-</html>
+  });
+
+}
+
+// Logout
+document.getElementById("logout").onclick = async () => {
+  await signOut(auth);
+  window.location.href = "index.html";
+};
