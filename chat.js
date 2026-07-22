@@ -7,9 +7,11 @@ import {
   query,
   orderBy,
   onSnapshot,
-  serverTimestamp,doc,
-updateDoc,
+  serverTimestamp,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 import {
   signOut,
   onAuthStateChanged
@@ -25,155 +27,157 @@ let myUid = "";
 let selectedUser = null;
 
 // Login Check
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
 
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
 
-  myUid = user.uid;
+    myUid = user.uid;
 
-await updateDoc(doc(db, "users",
-user.uid), {
-  online: true
-});
+    await updateDoc(doc(db, "users", myUid), {
+        online: true
+    });
 
-loadUsers(user.uid);
-window.addEventListener("beforeunload", async () => {
-  await updateDoc(doc(db, "users", myUid), {
-    online: false
-  });
-});
+    loadUsers();
+
+    window.addEventListener("beforeunload", async () => {
+        await updateDoc(doc(db, "users", myUid), {
+            online: false
+        });
+    });
+
 });
 
 // Load Users
-async function loadUsers(uid) {
+async function loadUsers() {
 
-  usersDiv.innerHTML = "";
+    usersDiv.innerHTML = "";
 
-  const snapshot = await getDocs(collection(db, "users"));
+    const snapshot = await getDocs(collection(db, "users"));
 
-console.log("Loading users...");
+    snapshot.forEach((docSnap) => {
 
-snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
 
-    console.log(docSnap.data());
+        if (data.uid === myUid) return;
 
-    const data = docSnap.data();
+        const div = document.createElement("div");
+        div.className = "user";
 
-    ...
-});
+        div.innerHTML = `
+            <img src="${data.photo}">
+            <div>
+                <b>${data.name}</b><br>
+                <small>${data.online ? "🟢 Online" : "⚪ Offline"}</small>
+            </div>
+        `;
 
-    if (data.uid !== uid) {
+        div.onclick = () => {
 
-      const div = document.createElement("div");
-      div.className = "user";
+            selectedUser = data;
+            chatHeader.innerText = data.name;
+            loadMessages();
 
-      div.innerHTML = `
-        <img src="${data.photo}">
-        <span>${data.name}</span>
-      `;
+        };
 
-      div.onclick = () => {
+        usersDiv.appendChild(div);
 
-        selectedUser = data;
-
-        chatHeader.innerText = data.name;
-
-        loadMessages();
-
-      };
-
-      usersDiv.appendChild(div);
-
-    }
-
-  });
+    });
 
 }
 
 // Logout
 document.getElementById("logout").onclick = async () => {
-await updateDoc(doc(db, "users", myUid), {
-  online: false
-});
-  await signOut(auth);
 
-  window.location.href = "index.html";
+    await updateDoc(doc(db, "users", myUid), {
+        online: false
+    });
+
+    await signOut(auth);
+
+    window.location.href = "index.html";
 
 };
+
 // Send Message
 sendBtn.onclick = async () => {
 
-  if (!selectedUser) {
-    alert("Select a user first");
-    return;
-  }
+    if (!selectedUser) {
+        alert("Select a user first");
+        return;
+    }
 
-  if (messageInput.value.trim() === "") return;
+    if (messageInput.value.trim() === "") return;
 
-  await addDoc(collection(db, "messages"), {
-    sender: myUid,
-    receiver: selectedUser.uid,
-    text: messageInput.value,
-    time: serverTimestamp()
-  });
+    await addDoc(collection(db, "messages"), {
 
-  messageInput.value = "";
+        sender: myUid,
+        receiver: selectedUser.uid,
+        text: messageInput.value,
+        time: serverTimestamp()
+
+    });
+
+    messageInput.value = "";
 
 };
 
 // Load Messages
 function loadMessages() {
 
-  messagesDiv.innerHTML = "";
-
-  const q = query(
-    collection(db, "messages"),
-    orderBy("time")
-  );
-
-  onSnapshot(q, (snapshot) => {
-
     messagesDiv.innerHTML = "";
 
-    snapshot.forEach((doc) => {
+    const q = query(
+        collection(db, "messages"),
+        orderBy("time")
+    );
 
-      const data = doc.data();
+    onSnapshot(q, (snapshot) => {
 
-      if (
-        (data.sender === myUid &&
-         data.receiver === selectedUser.uid) ||
+        messagesDiv.innerHTML = "";
 
-        (data.sender === selectedUser.uid &&
-         data.receiver === myUid)
-      ) {
+        snapshot.forEach((docSnap) => {
 
-        const div = document.createElement("div");
+            const data = docSnap.data();
 
-        div.style.margin = "10px";
-        div.style.padding = "10px";
-        div.style.borderRadius = "10px";
+            if (
 
-        if (data.sender === myUid) {
-          div.style.background = "#0084ff";
-          div.style.textAlign = "right";
-        } else {
-          div.style.background = "#444";
-          div.style.textAlign = "left";
-        }
+                (data.sender === myUid && data.receiver === selectedUser.uid) ||
 
-        div.innerText = data.text;
+                (data.sender === selectedUser.uid && data.receiver === myUid)
 
-        messagesDiv.appendChild(div);
+            ) {
 
-      }
+                const div = document.createElement("div");
+
+                div.style.margin = "10px";
+                div.style.padding = "10px";
+                div.style.borderRadius = "10px";
+
+                if (data.sender === myUid) {
+
+                    div.style.background = "#0084ff";
+                    div.style.textAlign = "right";
+
+                } else {
+
+                    div.style.background = "#444";
+                    div.style.textAlign = "left";
+
+                }
+
+                div.innerText = data.text;
+
+                messagesDiv.appendChild(div);
+
+            }
+
+        });
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     });
-
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-  });
 
 }
