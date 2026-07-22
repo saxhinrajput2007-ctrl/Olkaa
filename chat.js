@@ -29,155 +29,90 @@ let selectedUser = null;
 // Login Check
 onAuthStateChanged(auth, async (user) => {
 
-    if (!user) {
-        window.location.href = "index.html";
-        return;
-    }
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-    myUid = user.uid;
+  myUid = user.uid;
 
+  try {
     await updateDoc(doc(db, "users", myUid), {
-        online: true
+      online: true
     });
+  } catch (e) {
+    console.log(e);
+  }
 
-    loadUsers();
+  loadUsers();
 
-    window.addEventListener("beforeunload", async () => {
-        await updateDoc(doc(db, "users", myUid), {
-            online: false
-        });
-    });
+  window.addEventListener("beforeunload", async () => {
+    try {
+      await updateDoc(doc(db, "users", myUid), {
+        online: false
+      });
+    } catch (e) {}
+  });
 
 });
 
 // Load Users
 async function loadUsers() {
 
-    usersDiv.innerHTML = "";
+  usersDiv.innerHTML = "";
 
-    const snapshot = await getDocs(collection(db, "users"));
+  const snapshot = await getDocs(collection(db, "users"));
 
-    snapshot.forEach((docSnap) => {
+  snapshot.forEach((docSnap) => {
 
-        const data = docSnap.data();
+    const data = docSnap.data();
 
-        if (data.uid === myUid) return;
+    if (data.uid === myUid) return;
 
-        const div = document.createElement("div");
-        div.className = "user";
+    const div = document.createElement("div");
+    div.className = "user";
 
-        div.innerHTML = `
-            <img src="${data.photo}">
-            <div>
-                <b>${data.name}</b><br>
-                <small>${data.online ? "🟢 Online" : "⚪ Offline"}</small>
-            </div>
-        `;
+    div.innerHTML = `
+      <img src="${data.photo}" width="45" height="45">
+      <div>
+        <b>${data.name}</b><br>
+        <small>${data.online ? "🟢 Online" : "⚪ Offline"}</small>
+      </div>
+    `;
 
-        div.onclick = () => {
+    div.onclick = () => {
+      selectedUser = data;
+      chatHeader.innerText = data.name;
+      loadMessages();
+    };
 
-            selectedUser = data;
-            chatHeader.innerText = data.name;
-            loadMessages();
+    usersDiv.appendChild(div);
 
-        };
-
-        usersDiv.appendChild(div);
-
-    });
+  });
 
 }
-
-// Logout
-document.getElementById("logout").onclick = async () => {
-
-    await updateDoc(doc(db, "users", myUid), {
-        online: false
-    });
-
-    await signOut(auth);
-
-    window.location.href = "index.html";
-
-};
-
-// Send Message
-sendBtn.onclick = async () => {
-
-    if (!selectedUser) {
-        alert("Select a user first");
-        return;
-    }
-
-    if (messageInput.value.trim() === "") return;
-
-    await addDoc(collection(db, "messages"), {
-
-        sender: myUid,
-        receiver: selectedUser.uid,
-        text: messageInput.value,
-        time: serverTimestamp()
-
-    });
-
-    messageInput.value = "";
-
-};
 
 // Load Messages
 function loadMessages() {
 
+  if (!selectedUser) return;
+
+  const q = query(
+    collection(db, "messages"),
+    orderBy("time")
+  );
+
+  onSnapshot(q, (snapshot) => {
+
     messagesDiv.innerHTML = "";
 
-    const q = query(
-        collection(db, "messages"),
-        orderBy("time")
-    );
+    snapshot.forEach((docSnap) => {
 
-    onSnapshot(q, (snapshot) => {
+      const data = docSnap.data();
 
-        messagesDiv.innerHTML = "";
+      if (
+        (data.sender === myUid && data.receiver === selectedUser.uid) ||
+        (data.sender === selectedUser.uid && data.receiver === myUid)
+      ) {
 
-        snapshot.forEach((docSnap) => {
-
-            const data = docSnap.data();
-
-            if (
-
-                (data.sender === myUid && data.receiver === selectedUser.uid) ||
-
-                (data.sender === selectedUser.uid && data.receiver === myUid)
-
-            ) {
-
-                const div = document.createElement("div");
-
-                div.style.margin = "10px";
-                div.style.padding = "10px";
-                div.style.borderRadius = "10px";
-
-                if (data.sender === myUid) {
-
-                    div.style.background = "#0084ff";
-                    div.style.textAlign = "right";
-
-                } else {
-
-                    div.style.background = "#444";
-                    div.style.textAlign = "left";
-
-                }
-
-                div.innerText = data.text;
-
-                messagesDiv.appendChild(div);
-
-            }
-
-        });
-
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-    });
-
-}
+        const div = document.createElement("
