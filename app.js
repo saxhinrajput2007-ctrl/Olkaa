@@ -24,7 +24,7 @@ document.getElementById("signup").onclick = async () => {
       email: email,
       name: email.split("@")[0],
       photo: "https://i.pravatar.cc/150?img=1"
-    });
+    });online: false
 
     alert("Signup Successful");
     window.location.href = "chat.html";
