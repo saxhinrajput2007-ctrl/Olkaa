@@ -54,9 +54,16 @@ async function loadUsers(uid) {
 
   const snapshot = await getDocs(collection(db, "users"));
 
-  snapshot.forEach((docSnap) => {
+console.log("Loading users...");
+
+snapshot.forEach((docSnap) => {
+
+    console.log(docSnap.data());
 
     const data = docSnap.data();
+
+    ...
+});
 
     if (data.uid !== uid) {
 
